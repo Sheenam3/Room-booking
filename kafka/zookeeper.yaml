@@ -1,22 +1,6 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: zk-hs
-  labels:
-    app: zk
-spec:
-  ports:
-  - port: 2888
-    name: server
-  - port: 3888
-    name: leader-election
-  clusterIP: None
-  selector:
-    app: zk
----
-apiVersion: v1
-kind: Service
-metadata:
   name: zk-cs
   labels:
     app: zk
@@ -37,14 +21,11 @@ spec:
       app: zk
   maxUnavailable: 1
 ---
-apiVersion: apps/v1
+apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   name: zk
 spec:
-  selector:
-    matchLabels:
-      app: zk
   serviceName: zk-hs
   replicas: 3
   updateStrategy:
@@ -125,14 +106,17 @@ spec:
       securityContext:
         runAsUser: 1000
         fsGroup: 1000
-      volumes: 
-      - name: datadir
-        emptyDir: {}
-        #  volumeClaimTemplates:
-        #  - metadata:
-        #      name: datadir
-        #    spec:
-        #      accessModes: [ "ReadWriteOnce" ]
-        #      resources:
-        #        requests:
-        #          storage: 10Gi
+  volumeClaimTemplates:
+  - metadata:
+      name: datadir
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
+$10-worth New Year Gift for You
+Make your 2022 productive
+with LINER Premium
+
+Dismiss
+Open the gift
